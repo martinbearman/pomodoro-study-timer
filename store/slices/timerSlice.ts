@@ -45,7 +45,8 @@ const timerSlice = createSlice({
      * Start the timer
      */
     start: (state) => {
-      state.isRunning = true
+      state.isRunning = true;
+      console.log('Timer started');
     },
 
     /**
@@ -53,6 +54,7 @@ const timerSlice = createSlice({
      */
     pause: (state) => {
       state.isRunning = false
+      console.log('Timer paused');
     },
 
     /**
@@ -61,6 +63,7 @@ const timerSlice = createSlice({
     reset: (state) => {
       state.isRunning = false
       state.timeRemaining = state.isBreak ? state.breakDuration : state.studyDuration
+      console.log('Timer reset');
     },
 
     /**

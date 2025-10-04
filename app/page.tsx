@@ -11,8 +11,13 @@
  */
 
 import TimerDisplay from './components/Timer/TimerDisplay';
+import { start, pause, reset } from '@/store/slices/timerSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 export default function Home() {
+  const dispatch = useAppDispatch();
+  const isRunning = useAppSelector(state => state.timer.isRunning);
+
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-8">
       <div className="card max-w-2xl w-full text-center">
@@ -29,13 +34,16 @@ export default function Home() {
         </div>
         
         <div className="flex gap-4 justify-center mb-8">
-          <button className="button">
-            Start
+          <button className="button" onClick={() => dispatch(isRunning ? pause() : start())}>
+            {isRunning ? 'Pause' : 'Start'}
           </button>
-          <button className="button bg-gray-500">
+
+          <button className="button bg-gray-500" onClick={() => dispatch(reset())}>
             Reset
           </button>
         </div>
+
+        <div><p>Time is running: {isRunning ? 'Yes' : 'No'}</p></div>
         
         <div className="p-6 bg-gray-50 rounded-2xl text-left">
           <label className="block text-sm font-medium mb-2 text-gray-500">
