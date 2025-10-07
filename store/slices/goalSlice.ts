@@ -4,18 +4,43 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
  * Goal State Interface
  */
 interface GoalState {
-  currentGoal: string          // The study goal text
-  completedSessions: number    // Number of completed study sessions
+  // The description of the current goal
+  createdGoals: Array<{
+    id: string, // The id of the goal
+    durationSet: number, // The duration set for the goal
+    durationStudied: number, // The time studied for the goal
+    goalDescription: string, // The study goal text
+    isCurrentGoal: boolean, // Sets the current goal to True otherwise it'll be false
+    goalTimeStamp: number // Time and date the goal was created
+    isCompleted: boolean // If the goal was completed (timer ran to zero)
+  }>,
   totalStudyTime: number       // Total time studied in seconds
+  completedSessions: number    // Number of completed study sessions
 }
 
+/**
+ * Set Goal Payload Interface
+ */
+
+interface SetGoalPayload {
+  description: string, // The description of the goal
+  duration: number // The duration of the goal in seconds
+}
 /**
  * Initial State
  */
 const initialState: GoalState = {
-  currentGoal: '',
-  completedSessions: 0,
+  createdGoals: [{
+    id: 'test-goal-1',
+    goalDescription: 'Study for 25 minutes',
+    durationSet: 1500,
+    durationStudied: 0,
+    isCurrentGoal: true,
+    goalTimeStamp: Date.now(),
+    isCompleted: false
+  }],
   totalStudyTime: 0,
+  completedSessions: 0
 }
 
 /**
@@ -32,8 +57,22 @@ const goalSlice = createSlice({
     /**
      * Set or update the current study goal
      */
-    setGoal: (state, action: PayloadAction<string>) => {
-      state.currentGoal = action.payload
+    setGoal: (state, action: PayloadAction<SetGoalPayload>) => {
+      // Set all goals to not current
+      state.createdGoals.forEach(goal => {
+        goal.isCurrentGoal = false
+      })
+
+      const newGoal = {
+        id: crypto.randomUUID(),
+        durationSet: action.payload.duration,
+        durationStudied: 0,
+        goalDescription: action.payload.description,
+        isCurrentGoal: true,
+        goalTimeStamp: Date.now(),
+        isCompleted: false
+      }
+      state.createdGoals.push(newGoal)
     },
 
     /**
@@ -48,7 +87,7 @@ const goalSlice = createSlice({
      * Reset all goal data
      */
     resetGoal: (state) => {
-      state.currentGoal = ''
+      //state.currentGoal = ''
       state.completedSessions = 0
       state.totalStudyTime = 0
     },
