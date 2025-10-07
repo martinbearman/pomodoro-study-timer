@@ -5,6 +5,10 @@
  * We're using CSS custom properties (variables) for easy theming.
  */
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
   box-sizing: border-box;
   padding: 0;
