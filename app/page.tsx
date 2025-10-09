@@ -11,12 +11,11 @@
  */
 
 import TimerDisplay from './components/Timer/TimerDisplay';
-import { start, pause, reset } from '@/store/slices/timerSlice';
+import GoalInput from './components/Goal/GoalInput';
+// import { start, pause, reset } from '@/store/slices/timerSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 export default function Home() {
-  const dispatch = useAppDispatch();
-  const isRunning = useAppSelector(state => state.timer.isRunning);
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-8">
@@ -28,33 +27,14 @@ export default function Home() {
         <p className="text-lg text-gray-500 mb-8">
           Your Pomodoro-style study companion
         </p>
+
+        <div className="mb-8">
+          <GoalInput />
+        </div>
         
         <div className="p-8 bg-gray-50 rounded-2xl mb-8">
           <TimerDisplay />
-        </div>
-        
-        <div className="flex gap-4 justify-center mb-8">
-          <button className="button" onClick={() => dispatch(isRunning ? pause() : start())}>
-            {isRunning ? 'Pause' : 'Start'}
-          </button>
-
-          <button className="button bg-gray-500" onClick={() => dispatch(reset())}>
-            Reset
-          </button>
-        </div>
-
-        <div><p>Time is running: {isRunning ? 'Yes' : 'No'}</p></div>
-        
-        <div className="p-6 bg-gray-50 rounded-2xl text-left">
-          <label className="block text-sm font-medium mb-2 text-gray-500">
-            Today's Study Goal
-          </label>
-          <input 
-            className="input w-full"
-            type="text"
-            placeholder="What are you studying today?"
-          />
-        </div>
+        </div>        
       </div>
     </main>
   )

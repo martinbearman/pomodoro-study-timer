@@ -63,6 +63,7 @@ const goalSlice = createSlice({
         goal.isCurrentGoal = false
       })
 
+      // Set the new goal to current
       const newGoal = {
         id: crypto.randomUUID(),
         durationSet: action.payload.duration,

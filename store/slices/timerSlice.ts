@@ -128,4 +128,3 @@ export const {
 
 // Export reducer to include in the store
 export default timerSlice.reducer
-

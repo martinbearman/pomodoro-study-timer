@@ -28,7 +28,7 @@ export default function TimerDisplay() {
             <h2 className="text-center">{formattedTime}</h2>
         </div>
         <p className="text-sm text-gray-500 mt-2">
-            Study Session
+            Study Sessions
         </p>
     </>)
 }
