@@ -12,8 +12,6 @@
 
 import TimerDisplay from './components/Timer/TimerDisplay';
 import GoalInput from './components/Goal/GoalInput';
-// import { start, pause, reset } from '@/store/slices/timerSlice';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 export default function Home() {
 
