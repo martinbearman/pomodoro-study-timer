@@ -10,8 +10,9 @@ export default function GoalInput() {
     const [goalText, setGoalText] = useState('');
     const studyDuration = useAppSelector(state => state.timer.studyDuration);
     const isRunning = useAppSelector(state => state.timer.isRunning);
-    const goals = useAppSelector(state => state.goal.createdGoals);
-    const currentGoal = goals.find(goal => goal.isCurrentGoal === true)
+    const currentGoal = useAppSelector(state => 
+        state.goal.createdGoals.find(goal => goal.isCurrentGoal)
+    )
 
     const handleStartSession = () => {
         dispatch(setGoal({ description: goalText, duration: studyDuration }));
