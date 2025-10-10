@@ -92,9 +92,23 @@ const goalSlice = createSlice({
       state.completedSessions = 0
       state.totalStudyTime = 0
     },
+
+    /**
+     * Mark the current goal as completed
+     */
+    completeCurrentGoal: (state, action: PayloadAction<number>) => {
+      state.createdGoals.forEach(goal => {
+        if (goal.isCurrentGoal) {
+          goal.isCompleted = true
+          goal.durationStudied = action.payload
+          goal.isCurrentGoal = false
+        }
+      })
+    }
+      
   },
 })
 
-export const { setGoal, completeSession, resetGoal } = goalSlice.actions
+export const { setGoal, completeSession, resetGoal, completeCurrentGoal } = goalSlice.actions
 export default goalSlice.reducer
 

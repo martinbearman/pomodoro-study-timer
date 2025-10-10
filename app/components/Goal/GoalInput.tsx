@@ -23,9 +23,6 @@ export default function GoalInput() {
     const handlePauseSession = () => {
         dispatch(pause());
     }
-
-    console.log('isButtonDisabled', isButtonDisabled);
-    console.log('Goal Text', goalText.trim());
   
     return (
     <div className="w-full max-w-2xl mx-auto space-y-6">
