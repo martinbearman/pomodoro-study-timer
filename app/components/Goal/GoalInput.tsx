@@ -49,7 +49,7 @@ export default function GoalInput() {
         <button 
             onClick={isRunning ? handlePauseSession : handleStartSession} 
             disabled={isButtonDisabled}
-            className="w-full px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors"
+            className="disabled:text-gray-500 disabled:bg-gray-200 w-full px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors"
         >
             {isRunning ? 'Pause' : 'Start Study Session'} 
         </button>
