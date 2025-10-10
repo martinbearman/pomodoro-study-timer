@@ -113,3 +113,45 @@ export function formatStudyTime(seconds: number): string {
   return `${minutes}m`
 }
 
+/**
+ * Format a timestamp into a human-readable string
+ * 
+ * @param timestamp - Timestamp to format
+ * @returns Formatted string (e.g., "Oct 10, 2025 at 10:00 AM")
+ */
+
+export function formatTimeStamp(timestamp: number): string {
+  const date = new Date(timestamp)
+  
+  const dateString = date.toLocaleDateString('en-GB', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  })
+  
+  const timeString = date.toLocaleTimeString('en-GB', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  })
+  
+  return `${dateString} at ${timeString}`
+}
+
+console.log(formatTimeStamp(Date.now()))
+
+/**
+ * Check if a timestamp is today
+ * 
+ * @param timestamp - Timestamp to check
+ * @returns True if the timestamp is today, false otherwise
+ */
+
+export function isToday(timestamp: number): boolean {
+  const date = new Date(timestamp)
+  const today = new Date()
+
+  return date.toDateString() === today.toDateString()
+}
+
+console.log(isToday(Date.now()))
