@@ -18,7 +18,7 @@ export default function GoalInput() {
     const handleStartSession = () => {
         dispatch(setGoal({ description: goalText, duration: studyDuration }));
         dispatch(start());
-        setGoalText('');
+        //setGoalText('');
     }
     const handlePauseSession = () => {
         dispatch(pause());

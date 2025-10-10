@@ -1,6 +1,6 @@
 'use client'
 
-import { formatTime } from '@/lib/utils'
+import { formatTime, playSound } from '@/lib/utils'
 import { useAppSelector, useAppDispatch } from '@/store/hooks'
 import { tick } from '@/store/slices/timerSlice'
 import { useEffect } from 'react'
@@ -10,6 +10,7 @@ export default function TimerDisplay() {
   const dispatch = useAppDispatch()
   const formattedTime = formatTime(timeRemaining)
 
+  // Update timer every second
   useEffect(() => {
     let intervalId: NodeJS.Timeout | undefined;
 
@@ -22,6 +23,13 @@ export default function TimerDisplay() {
     return () => clearInterval(intervalId as NodeJS.Timeout)
 
   }, [isRunning])
+
+  // Play sound when timer reaches 0
+  useEffect(() => {
+    if(timeRemaining === 0) {
+      playSound('complete')
+    }
+  }, [timeRemaining])
 
   return (<>
         <div className="text-6xl font-bold font-mono text-blue-500">
