@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import timerReducer from './slices/timerSlice'
 import goalReducer from './slices/goalSlice'
+import { listenerMiddleware } from './listenerMiddleware'
 
 /**
  * Redux Store Configuration
@@ -16,6 +17,8 @@ export const store = configureStore({
     timer: timerReducer,  // Manages timer state (time, isRunning, etc.)
     goal: goalReducer,     // Manages study goals and sessions
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().prepend(listenerMiddleware.middleware),
 })
 
 // These types are used throughout the app for TypeScript support

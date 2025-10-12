@@ -22,10 +22,10 @@ interface TimerState {
  * 7 minutes = 420 seconds
  */
 const initialState: TimerState = {
-  timeRemaining: 1500,  // 25 minutes in seconds
+  timeRemaining: 2,  // 25 minutes in seconds
   isRunning: false,
   isBreak: false,
-  studyDuration: 1500,  // 25 minutes
+  studyDuration: 2,  // 25 minutes
   breakDuration: 420,   // 7 minutes
 }
 
@@ -46,6 +46,7 @@ const timerSlice = createSlice({
      */
     start: (state) => {
       state.isRunning = true;
+      state.timeRemaining = state.studyDuration;
       console.log('Timer started');
     },
 
