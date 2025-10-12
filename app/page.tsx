@@ -12,6 +12,7 @@
 
 import TimerDisplay from './components/Timer/TimerDisplay';
 import GoalInput from './components/Goal/GoalInput';
+import GoalHistory from './components/Goal/GoalHistory';
 
 export default function Home() {
 
@@ -33,6 +34,10 @@ export default function Home() {
         <div className="p-8 bg-gray-50 rounded-2xl mb-8">
           <TimerDisplay />
         </div>        
+
+        <div className="p-8 bg-gray-50 rounded-2xl mb-8">
+          <GoalHistory />
+        </div>
       </div>
     </main>
   )
