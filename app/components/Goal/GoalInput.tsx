@@ -43,14 +43,16 @@ export default function GoalInput() {
 
       {/* Goal Input Section */}
       <div className="space-y-4">
-        <input
-          disabled={isRunning}
-          type="text"
-          value={goalText}
-          onChange={(e) => setGoalText(e.target.value)}
-          placeholder="Enter your next goal..."
-          className="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-        />
+        {!currentGoal && (
+          <input
+            disabled={isRunning}
+            type="text"
+            value={goalText}
+            onChange={(e) => setGoalText(e.target.value)}
+            placeholder="Enter your next goal..."
+            className="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+          />
+        )}
         
         <button 
             onClick={
