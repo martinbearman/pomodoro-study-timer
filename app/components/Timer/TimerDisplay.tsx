@@ -32,11 +32,9 @@ export default function TimerDisplay() {
   }, [timeRemaining])
 
   return (<>
-        <div className="text-6xl font-bold font-mono text-blue-500">
-            <h2 className="text-center">{formattedTime}</h2>
+        <div className="relative inline-block">
+            <img src="/icons/tomato-timer.png" alt="Timer" className="max-w-[300px] h-auto object-contain" />
+            <p className="absolute top-[38%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl font-bold font-mono text-white drop-shadow-lg">{formattedTime}</p>
         </div>
-        <p className="text-sm text-gray-500 mt-2">
-            Study Sessions
-        </p>
     </>)
 }
