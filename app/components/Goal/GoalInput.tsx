@@ -2,7 +2,7 @@
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useState } from 'react';
-import { setGoal } from '@/store/slices/goalSlice';
+import { setGoal, saveGoal } from '@/store/slices/goalSlice';
 import { start, pause, reset } from '@/store/slices/timerSlice';
 import { current } from '@reduxjs/toolkit';
 
@@ -22,6 +22,7 @@ export default function GoalInput() {
         dispatch(start());
         setGoalText('');
     }
+
     const handlePauseSession = () => {
         dispatch(pause());
     }
@@ -29,13 +30,17 @@ export default function GoalInput() {
     const handleResumeSession = () => {
         dispatch(start());
     }
+
+    const handleSaveGoal = () => {
+        dispatch(saveGoal());
+    }
   
     return (
     <div className="w-full max-w-2xl mx-auto space-y-6">
       
       {/* Current Goal Display - shown when there's an active goal */}
       <div className="text-center">
-        <h2 className="text-sm text-gray-500 uppercase tracking-wide mb-2">Current Goal</h2>
+        <h2 className="text-sm text-red-500 uppercase tracking-wide mb-2">Current Goal</h2>
         {currentGoal 
           ? <p className="text-1xl font-bold text-blue-600">{currentGoal.goalDescription }</p>
           : <p className="text-3xl font-bold text-slate-300">No goal set yet</p>}    
@@ -63,15 +68,24 @@ export default function GoalInput() {
                   : handleStartSession
             } 
             disabled={isButtonDisabled && !currentGoal}
-            className="disabled:text-gray-500 disabled:bg-gray-200 w-full px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors"
+            className="disabled:text-gray-500 disabled:bg-red-100 w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-800 transition-colors"
         >
             {isRunning 
               ? 'Pause' 
               : currentGoal 
                 ? 'Resume' 
-                : 'Start Study Session'
-            } 
+                : 'Enter a goal'
+            }
         </button>
+
+        {!isRunning && currentGoal && (
+          <button 
+            onClick={handleSaveGoal}
+            className="w-full px-6 py-3 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600 transition-colors"
+          >
+            Save for Later
+          </button>
+        )}
       </div>
     </div>
   )
