@@ -1,19 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 /**
+ * Individual Goal Interface
+ */
+export interface Goal {
+  id: string, // The id of the goal
+  durationSet: number, // The duration set for the goal
+  durationStudied: number, // The time studied for the goal
+  goalDescription: string, // The study goal text
+  isCurrentGoal: boolean, // Sets the current goal to True otherwise it'll be false
+  goalTimeStamp: number // Time and date the goal was created
+  isCompleted: boolean // If the goal was completed (timer ran to zero)
+}
+
+/**
  * Goal State Interface
  */
-interface GoalState {
+export interface GoalState {
   // The description of the current goal
-  createdGoals: Array<{
-    id: string, // The id of the goal
-    durationSet: number, // The duration set for the goal
-    durationStudied: number, // The time studied for the goal
-    goalDescription: string, // The study goal text
-    isCurrentGoal: boolean, // Sets the current goal to True otherwise it'll be false
-    goalTimeStamp: number // Time and date the goal was created
-    isCompleted: boolean // If the goal was completed (timer ran to zero)
-  }>,
+  createdGoals: Array<Goal>,
   totalStudyTime: number       // Total time studied in seconds
   completedSessions: number    // Number of completed study sessions
 }
@@ -104,11 +109,32 @@ const goalSlice = createSlice({
           goal.isCurrentGoal = false
         }
       })
-    }
+    },
+
+    // Switch to a different goal
+    switchCurrentGoal: (state, action: PayloadAction<string>) => { 
+      // Set all goals to not current
+      state.createdGoals.forEach(goal => {
+        goal.isCurrentGoal = false;
+      });
       
+      const selectedGoal = state.createdGoals.find(goal => goal.id === action.payload);
+
+      if(selectedGoal && !selectedGoal.isCompleted) {
+        selectedGoal.isCurrentGoal = true;
+      }
+    },
+
+    saveGoal: (state) => {
+      const currentGoal = state.createdGoals.find(goal => goal.isCurrentGoal);
+      if(currentGoal) {
+        currentGoal.isCurrentGoal = false;
+      }
+    },
+
   },
 })
 
-export const { setGoal, completeSession, resetGoal, completeCurrentGoal } = goalSlice.actions
+export const { setGoal, completeSession, resetGoal, completeCurrentGoal, switchCurrentGoal, saveGoal } = goalSlice.actions
 export default goalSlice.reducer
 
