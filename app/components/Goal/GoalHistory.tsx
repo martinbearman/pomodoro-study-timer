@@ -1,8 +1,11 @@
 'use client'
 
 import {useState} from 'react'
-import {useAppSelector} from '@/store/hooks'
+import {useAppSelector, useAppDispatch} from '@/store/hooks'
 import { formatTime, formatTimeStamp, isToday} from '@/lib/utils'
+import { Goal } from '@/store/slices/goalSlice'
+import { switchCurrentGoal, setGoal } from '@/store/slices/goalSlice'
+import { setTimeRemaining } from '@/store/slices/timerSlice'
 
 export default function GoalHistory() {
 
@@ -10,6 +13,21 @@ export default function GoalHistory() {
     //const [isOpen, setIsOpen] = useState(false)
     // const [expandedId, setExpandedId] = useState<string | null>(null)
     const sortedGoals = [...goals].sort((a, b) => b.goalTimeStamp - a.goalTimeStamp)
+    const isRunning = useAppSelector(state => state.timer.isRunning)
+    const dispatch = useAppDispatch()
+
+    const handleGoalClick = (goal: Goal) => {
+        if(!(goal.isCurrentGoal && isRunning) && !goal.isCompleted) {
+            // Get the remaining time for the clicked goal
+            const remainingTime = goal.durationSet - goal.durationStudied
+            
+            // Set the current goal to the clicked goal
+            dispatch(switchCurrentGoal(goal.id))
+            
+            //console.log('goal clicked', goal.id)
+            dispatch(setTimeRemaining(remainingTime))
+        }
+    }
 
     return (
         <div>
@@ -32,7 +50,7 @@ export default function GoalHistory() {
                             {sortedGoals.map((goal, index) => (
                                 <tr 
                                     key={goal.id}
-                                    // onClick={() => setExpandedId(expandedId === goal.id ? null : goal.id)}
+                                    onClick={() => handleGoalClick(goal)}
                                     className={`cursor-pointer hover:opacity-80 ${
                                         goal.isCompleted 
                                             ? 'bg-green-100' 
