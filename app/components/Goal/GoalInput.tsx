@@ -2,55 +2,57 @@
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useState } from 'react';
-import { setGoal, saveGoal } from '@/store/slices/goalSlice';
+import { createGoal, clearCurrentGoal } from '@/store/slices/goalSlice';
 import { start, pause, reset } from '@/store/slices/timerSlice';
-import { current } from '@reduxjs/toolkit';
 
 export default function GoalInput() {
-    const dispatch = useAppDispatch();
-    const [goalText, setGoalText] = useState('');
-    const studyDuration = useAppSelector(state => state.timer.studyDuration);
-    const isRunning = useAppSelector(state => state.timer.isRunning);
-    const currentGoal = useAppSelector(state => 
-        state.goal.createdGoals.find(goal => goal.isCurrentGoal)
-    )
-    const isButtonDisabled = goalText.trim() === '' && !isRunning;
-
-    const handleStartSession = () => {
-        dispatch(setGoal({ description: goalText, duration: studyDuration }));
-        dispatch(reset());  // Reset timer first
-        dispatch(start());
-        setGoalText('');
-    }
-
-    const handlePauseSession = () => {
-        dispatch(pause());
-    }
-
-    const handleResumeSession = () => {
-        dispatch(start());
-    }
-
-    const handleSaveGoal = () => {
-        dispatch(saveGoal());
-    }
+  const dispatch = useAppDispatch();
+  const [goalText, setGoalText] = useState('');
+  const isRunning = useAppSelector(state => state.timer.isRunning);
   
-    return (
+  // Get current goal using currentGoalId
+  const currentGoalId = useAppSelector(state => state.goal.currentGoalId);
+  const currentGoal = useAppSelector(state => 
+    state.goal.goals.find(goal => goal.id === currentGoalId)
+  );
+
+  const handleStartSession = () => {
+    dispatch(createGoal(goalText));  // Just pass the description
+    dispatch(reset());
+    dispatch(start());
+    setGoalText('');
+  }
+
+  const handlePauseSession = () => {
+    dispatch(pause());
+  }
+
+  const handleResumeSession = () => {
+    dispatch(start());
+  }
+
+  const handleSaveForLater = () => {
+    dispatch(clearCurrentGoal());
+  }
+
+  const isButtonDisabled = !currentGoal && goalText.trim() === '';
+
+  return (
     <div className="w-full max-w-2xl mx-auto space-y-6">
       
-      {/* Current Goal Display - shown when there's an active goal */}
+      {/* Current Goal Display */}
       <div className="text-center">
         <h2 className="text-sm text-red-500 uppercase tracking-wide mb-2">Current Goal</h2>
         {currentGoal 
-          ? <p className="text-1xl font-bold text-blue-600">{currentGoal.goalDescription }</p>
-          : <p className="text-3xl font-bold text-slate-300">No goal set yet</p>}    
+          ? <p className="text-1xl font-bold text-blue-600">{currentGoal.goalDescription}</p>
+          : <p className="text-3xl font-bold text-slate-300">No goal set yet</p>
+        }    
       </div>
 
       {/* Goal Input Section */}
       <div className="space-y-4">
         {!currentGoal && (
           <input
-            disabled={isRunning}
             type="text"
             value={goalText}
             onChange={(e) => setGoalText(e.target.value)}
@@ -60,34 +62,33 @@ export default function GoalInput() {
         )}
         
         <button 
-            onClick={
-              isRunning 
-                ? handlePauseSession 
-                : (currentGoal) 
-                  ? handleResumeSession 
-                  : handleStartSession
-            } 
-            disabled={isButtonDisabled && !currentGoal}
-            className="disabled:text-gray-500 disabled:bg-red-100 w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-800 transition-colors"
-        >
-            {isRunning 
-              ? 'Pause' 
+          onClick={
+            isRunning 
+              ? handlePauseSession 
               : currentGoal 
-                ? 'Resume' 
-                : 'Enter a goal'
-            }
+                ? handleResumeSession 
+                : handleStartSession
+          } 
+          disabled={isButtonDisabled}
+          className="disabled:text-gray-500 disabled:bg-red-100 w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-800 transition-colors"
+        >
+          {isRunning 
+            ? 'Pause' 
+            : currentGoal 
+              ? 'Resume' 
+              : 'Start Study Session'
+          } 
         </button>
 
-        {!isRunning && currentGoal && (
+        {/* {!isRunning && currentGoal && (
           <button 
-            onClick={handleSaveGoal}
+            onClick={handleSaveForLater}
             className="w-full px-6 py-3 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600 transition-colors"
           >
             Save for Later
           </button>
-        )}
+        )} */}
       </div>
     </div>
   )
 }
-

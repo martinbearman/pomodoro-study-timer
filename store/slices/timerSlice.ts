@@ -22,10 +22,10 @@ interface TimerState {
  * 7 minutes = 420 seconds
  */
 const initialState: TimerState = {
-  timeRemaining: 2,  // 25 minutes in seconds
+  timeRemaining: 10,  // 25 minutes in seconds
   isRunning: false,
   isBreak: false,
-  studyDuration: 2,  // 25 minutes
+  studyDuration: 10,  // 25 minutes
   breakDuration: 420,   // 7 minutes
 }
 
@@ -46,7 +46,7 @@ const timerSlice = createSlice({
      */
     start: (state) => {
       state.isRunning = true;
-      state.timeRemaining = state.studyDuration;
+      //state.timeRemaining = state.studyDuration;
       console.log('Timer started');
     },
 
@@ -73,10 +73,12 @@ const timerSlice = createSlice({
     tick: (state) => {
       if (state.timeRemaining > 0) {
         state.timeRemaining -= 1
-      } else {
-        // Time's up! Auto-pause
-        state.isRunning = false
+        // Stop the timer immediately when reaching 0 to prevent double-firing
+        if (state.timeRemaining === 0) {
+          state.isRunning = false
+        }
       }
+      // If already at 0, do nothing (timer already stopped)
     },
 
     /**
@@ -113,6 +115,10 @@ const timerSlice = createSlice({
         state.timeRemaining = seconds
       }
     },
+
+    setTimeRemaining: (state, action: PayloadAction<number>) => {
+      state.timeRemaining = action.payload
+    },
   },
 })
 
@@ -124,7 +130,8 @@ export const {
   tick, 
   toggleMode, 
   setStudyDuration, 
-  setBreakDuration 
+  setBreakDuration,
+  setTimeRemaining
 } = timerSlice.actions
 
 // Export reducer to include in the store

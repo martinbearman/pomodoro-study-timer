@@ -6,7 +6,7 @@ import { tick } from '@/store/slices/timerSlice'
 import { useEffect } from 'react'
 
 export default function TimerDisplay() {
-  const { timeRemaining, isRunning, isBreak } = useAppSelector(state => state.timer)
+  const { timeRemaining, isRunning } = useAppSelector(state => state.timer)
   const dispatch = useAppDispatch()
   const formattedTime = formatTime(timeRemaining)
 
@@ -20,9 +20,13 @@ export default function TimerDisplay() {
         }, 1000)        
     } 
 
-    return () => clearInterval(intervalId as NodeJS.Timeout)
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId)
+      }
+    }
 
-  }, [isRunning])
+  }, [isRunning, dispatch])
 
   // Play sound when timer reaches 0
   useEffect(() => {

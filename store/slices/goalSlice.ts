@@ -1,140 +1,101 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 /**
- * Individual Goal Interface
+ * Goal Interface - represents a study goal
  */
 export interface Goal {
-  id: string, // The id of the goal
-  durationSet: number, // The duration set for the goal
-  durationStudied: number, // The time studied for the goal
-  goalDescription: string, // The study goal text
-  isCurrentGoal: boolean, // Sets the current goal to True otherwise it'll be false
-  goalTimeStamp: number // Time and date the goal was created
-  isCompleted: boolean // If the goal was completed (timer ran to zero)
+  id: string
+  goalDescription: string
+  goalTimeStamp: number
+  totalTimeStudied: number
+}
+
+/**
+ * Session Interface - represents an individual Pomodoro session
+ */
+export interface Session {
+  id: string
+  goalId: string
+  sessionDate: number
+  duration: number
+  completed: boolean
 }
 
 /**
  * Goal State Interface
  */
-export interface GoalState {
-  // The description of the current goal
-  createdGoals: Array<Goal>,
-  totalStudyTime: number       // Total time studied in seconds
-  completedSessions: number    // Number of completed study sessions
+interface GoalState {
+  goals: Goal[]
+  sessions: Session[]
+  currentGoalId: string | null   // Which goal is active right now
+  totalStudyTime: number
+  totalSessions: number
 }
 
-/**
- * Set Goal Payload Interface
- */
-
-interface SetGoalPayload {
-  description: string, // The description of the goal
-  duration: number // The duration of the goal in seconds
-}
 /**
  * Initial State
  */
 const initialState: GoalState = {
-  createdGoals: [{
-    id: 'test-goal-1',
-    goalDescription: 'Study for 25 minutes',
-    durationSet: 1500,
-    durationStudied: 0,
-    isCurrentGoal: true,
-    goalTimeStamp: Date.now(),
-    isCompleted: false
-  }],
+  goals: [],
+  sessions: [],
+  currentGoalId: null,
   totalStudyTime: 0,
-  completedSessions: 0
+  totalSessions: 0
 }
 
-/**
- * Goal Slice
- * 
- * Manages study goals and session tracking.
- * This is separate from the timer to follow the
- * principle of separating concerns.
- */
 const goalSlice = createSlice({
   name: 'goal',
   initialState,
   reducers: {
-    /**
-     * Set or update the current study goal
-     */
-    setGoal: (state, action: PayloadAction<SetGoalPayload>) => {
-      // Set all goals to not current
-      state.createdGoals.forEach(goal => {
-        goal.isCurrentGoal = false
-      })
-
-      // Set the new goal to current
+    // Create a new goal and set it as current
+    createGoal: (state, action: PayloadAction<string>) => {
       const newGoal = {
         id: crypto.randomUUID(),
-        durationSet: action.payload.duration,
-        durationStudied: 0,
-        goalDescription: action.payload.description,
-        isCurrentGoal: true,
+        goalDescription: action.payload,
         goalTimeStamp: Date.now(),
-        isCompleted: false
+        totalTimeStudied: 0
       }
-      state.createdGoals.push(newGoal)
+      state.goals.push(newGoal)
+      state.currentGoalId = newGoal.id
     },
-
-    /**
-     * Mark a session as complete and track stats
-     */
-    completeSession: (state, action: PayloadAction<number>) => {
-      state.completedSessions += 1
-      state.totalStudyTime += action.payload
+    // Set the current goal to the goal with the given id
+    setCurrentGoal: (state, action: PayloadAction<string>) => {
+      state.currentGoalId = action.payload
     },
-
-    /**
-     * Reset all goal data
-     */
-    resetGoal: (state) => {
-      //state.currentGoal = ''
-      state.completedSessions = 0
-      state.totalStudyTime = 0
+    // Clear the current goal
+    clearCurrentGoal: (state) => {
+      state.currentGoalId = null
     },
-
-    /**
-     * Mark the current goal as completed
-     */
-    completeCurrentGoal: (state, action: PayloadAction<number>) => {
-      state.createdGoals.forEach(goal => {
-        if (goal.isCurrentGoal) {
-          goal.isCompleted = true
-          goal.durationStudied = action.payload
-          goal.isCurrentGoal = false
-        }
-      })
-    },
-
-    // Switch to a different goal
-    switchCurrentGoal: (state, action: PayloadAction<string>) => { 
-      // Set all goals to not current
-      state.createdGoals.forEach(goal => {
-        goal.isCurrentGoal = false;
-      });
+    // Complete a session
+    completeSession: (state, action: PayloadAction<{ duration: number, completed: boolean }>) => {
+      if (!state.currentGoalId) return
       
-      const selectedGoal = state.createdGoals.find(goal => goal.id === action.payload);
-
-      if(selectedGoal && !selectedGoal.isCompleted) {
-        selectedGoal.isCurrentGoal = true;
+      // Create session record
+      const newSession: Session = {
+        id: crypto.randomUUID(),
+        goalId: state.currentGoalId,
+        sessionDate: Date.now(),
+        duration: action.payload.duration,
+        completed: action.payload.completed
       }
-    },
-
-    saveGoal: (state) => {
-      const currentGoal = state.createdGoals.find(goal => goal.isCurrentGoal);
-      if(currentGoal) {
-        currentGoal.isCurrentGoal = false;
+      state.sessions.push(newSession)
+      
+      // Update goal's total time
+      const goal = state.goals.find(g => g.id === state.currentGoalId)
+      if (goal) {
+        goal.totalTimeStudied += action.payload.duration
       }
-    },
+      
+      // Update global stats
+      state.totalStudyTime += action.payload.duration
+      state.totalSessions += 1
+      
+      console.trace("completeSession called", action.payload);
 
-  },
+    }
+  }
 })
 
-export const { setGoal, completeSession, resetGoal, completeCurrentGoal, switchCurrentGoal, saveGoal } = goalSlice.actions
+export const { createGoal, setCurrentGoal, clearCurrentGoal, completeSession } = goalSlice.actions
 export default goalSlice.reducer
 
