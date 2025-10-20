@@ -9,6 +9,7 @@ export default function GoalInput() {
   const dispatch = useAppDispatch();
   const [goalText, setGoalText] = useState('');
   const isRunning = useAppSelector(state => state.timer.isRunning);
+  const timeRemaining = useAppSelector(state => state.timer.timeRemaining)
   
   // Get current goal using currentGoalId
   const currentGoalId = useAppSelector(state => state.goal.currentGoalId);
@@ -31,8 +32,24 @@ export default function GoalInput() {
     dispatch(start());
   }
 
+  const handleStartNewSession = () => {
+    dispatch(reset())
+    dispatch(start())
+  }
+
+  const handleGetButtonText = () => {
+    if (isRunning) {
+      return 'Pause';
+    }
+    if (currentGoal) {
+      return timeRemaining === 0 ? 'Start New Session' : 'Resume'
+    }
+    return 'Start Study Session';
+  }
+
   const handleSaveForLater = () => {
-    dispatch(clearCurrentGoal());
+    dispatch(clearCurrentGoal())
+    dispatch(reset())
   }
 
   const isButtonDisabled = !currentGoal && goalText.trim() === '';
@@ -66,28 +83,23 @@ export default function GoalInput() {
             isRunning 
               ? handlePauseSession 
               : currentGoal 
-                ? handleResumeSession 
+                ? (timeRemaining === 0 ? handleStartNewSession : handleResumeSession)
                 : handleStartSession
           } 
           disabled={isButtonDisabled}
           className="disabled:text-gray-500 disabled:bg-red-100 w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-800 transition-colors"
         >
-          {isRunning 
-            ? 'Pause' 
-            : currentGoal 
-              ? 'Resume' 
-              : 'Start Study Session'
-          } 
+          {handleGetButtonText()}
         </button>
-
-        {/* {!isRunning && currentGoal && (
+        
+        {!isRunning && currentGoal && timeRemaining !== 0 && (
           <button 
             onClick={handleSaveForLater}
             className="w-full px-6 py-3 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600 transition-colors"
           >
             Save for Later
           </button>
-        )} */}
+        )}
       </div>
     </div>
   )
