@@ -11,6 +11,7 @@ export default function GoalHistory() {
   const sessions = useAppSelector(state => state.goal.sessions)
   const currentGoalId = useAppSelector(state => state.goal.currentGoalId)
   const isRunning = useAppSelector(state => state.timer.isRunning)
+  const studyDuration = useAppSelector(state => state.timer.studyDuration)
   const dispatch = useAppDispatch()
 
   const sortedGoals = [...goals].sort((a, b) => b.goalTimeStamp - a.goalTimeStamp)
@@ -22,7 +23,6 @@ export default function GoalHistory() {
       dispatch(setCurrentGoal(goalId))
       
       // Reset timer to full duration when switching goals
-      const studyDuration = useAppSelector.getState?.()?.timer?.studyDuration || 1500
       dispatch(setTimeRemaining(studyDuration))
     }
   }
