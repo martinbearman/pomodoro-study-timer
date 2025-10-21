@@ -13,10 +13,12 @@ listenerMiddleware.startListening({
   effect: async (action, listenerApi) => {
     const state = listenerApi.getState() as RootState
     
-    if (state.timer.timeRemaining === 0 && state.goal.currentGoalId) {
+    if (state.goal.currentGoalId && state.timer.timeRemaining === 0) {
+      const elapsedTime = state.timer.studyDuration - state.timer.timeRemaining;
+
       // Timer completed - record the session
       listenerApi.dispatch(completeSession({
-        duration: state.timer.studyDuration,
+        duration: elapsedTime,
         completed: true
       }))
     }

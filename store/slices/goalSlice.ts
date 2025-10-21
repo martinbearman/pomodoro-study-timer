@@ -89,7 +89,7 @@ const goalSlice = createSlice({
       // Update global stats
       state.totalStudyTime += action.payload.duration
       state.totalSessions += 1
-      
+
       console.trace("completeSession called", action.payload);
 
     }

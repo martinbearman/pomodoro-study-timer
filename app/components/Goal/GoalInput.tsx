@@ -2,8 +2,9 @@
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useState } from 'react';
-import { createGoal, clearCurrentGoal } from '@/store/slices/goalSlice';
+import { createGoal, clearCurrentGoal, completeSession } from '@/store/slices/goalSlice';
 import { start, pause, reset } from '@/store/slices/timerSlice';
+import { store } from '@/store/store';
 
 export default function GoalInput() {
   const dispatch = useAppDispatch();
@@ -16,6 +17,7 @@ export default function GoalInput() {
   const currentGoal = useAppSelector(state => 
     state.goal.goals.find(goal => goal.id === currentGoalId)
   );
+  const isButtonDisabled = !currentGoal && goalText.trim() === '';
 
   const handleStartSession = () => {
     dispatch(createGoal(goalText));  // Just pass the description
@@ -48,11 +50,18 @@ export default function GoalInput() {
   }
 
   const handleSaveForLater = () => {
+    const state = store.getState();
+    const elapsedTime = state.timer.studyDuration - state.timer.timeRemaining;
+    
+    dispatch(completeSession({
+      duration: elapsedTime,
+      completed: true
+    }))
+    
     dispatch(clearCurrentGoal())
     dispatch(reset())
+    console.log("handleSaveForLater called");
   }
-
-  const isButtonDisabled = !currentGoal && goalText.trim() === '';
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6">
