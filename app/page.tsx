@@ -18,22 +18,32 @@ export default function Home() {
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-8">
-      <div className="card max-w-2xl w-full text-center">
-
-        <h1 className="text-4xl mb-4 text-red-600">
+      <div className="w-full max-w-6xl">
+        
+        <h1 className="text-4xl mb-8 text-red-600 text-left">
           Temporizador Pomodoro
         </h1>
 
-        <div className="p-8 rounded-2xl pt-2">
-          <TimerDisplay />
-        </div>   
+        {/* Two-column layout: Timer on left, Goals on right */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          {/* Left Column - Timer */}
+          <div className="card text-center">
+            <div className="p-0">
+              <TimerDisplay />
+            </div>
+            <div>
+              <GoalInput />
+            </div>
+          </div>
 
-        <div className="mb-8">
-          <GoalInput />
-        </div>
-      
-        <div className="p-8 bg-gray-50 rounded-2xl mb-8">
-          <GoalHistory />
+          {/* Right Column - Goals */}
+          <div className="space-y-6">
+            <div className="card bg-gray-50">
+              <GoalHistory />
+            </div>
+          </div>
+
         </div>
 
       </div>

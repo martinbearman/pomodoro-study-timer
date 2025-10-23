@@ -85,12 +85,10 @@ export default function GoalInput() {
      <div className="w-full max-w-2xl mx-auto space-y-6">
       
       {/* Current Goal Display */}
-      <div className="text-center">
-        <h2 className="text-sm text-red-500 uppercase tracking-wide mb-2">Current Goal</h2>
-        {currentGoal 
-          ? <p className="text-1xl font-bold text-blue-600">{currentGoal.goalDescription}</p>
-          : <p className="text-3xl font-bold text-slate-300">No goal set yet</p>
-        }    
+      <div className="text-center mt-4">
+        {currentGoal && (
+          <p className="text-3xl text-red-600">{currentGoal.goalDescription}</p>
+        )}
       </div>
 
       {/* Goal Input Section */}
@@ -102,7 +100,7 @@ export default function GoalInput() {
             onChange={(e) => setGoalText(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Enter your next goal..."
-            className="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+            className="w-full px-6 py-4 text-lg border-b-2 border-gray-300 focus:outline-none focus:border-red-500"
           />
         )}
         
