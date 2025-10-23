@@ -3,7 +3,6 @@ import timerReducer, {
   start, 
   pause, 
   reset, 
-  tick,
   toggleMode,
   setStudyDuration,
   setBreakDuration
@@ -52,22 +51,6 @@ describe('timerSlice', () => {
     expect(actual.timeRemaining).toBe(1500) // Reset to study duration
   })
 
-  it('should handle tick action', () => {
-    const actual = timerReducer(initialState, tick())
-    expect(actual.timeRemaining).toBe(1499)
-  })
-
-  it('should stop running when time reaches 0', () => {
-    const almostDoneState = { 
-      ...initialState, 
-      timeRemaining: 1,
-      isRunning: true 
-    }
-    const actual = timerReducer(almostDoneState, tick())
-    
-    expect(actual.timeRemaining).toBe(0)
-    expect(actual.isRunning).toBe(false)
-  })
 
   it('should handle toggleMode action', () => {
     const actual = timerReducer(initialState, toggleMode())

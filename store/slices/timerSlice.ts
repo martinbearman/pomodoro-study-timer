@@ -66,18 +66,13 @@ const timerSlice = createSlice({
       console.log('Timer reset');
     },
 
+
     /**
-     * Decrease time by 1 second (called every second by the app)
+     * Stop the timer
      */
-    tick: (state) => {
-      if (state.timeRemaining > 0) {
-        state.timeRemaining -= 1
-        // Stop the timer immediately when reaching 0 to prevent double-firing
-        if (state.timeRemaining === 0) {
-          state.isRunning = false
-        }
-      }
-      // If already at 0, do nothing (timer already stopped)
+    stop: (state) => {
+      state.isRunning = false
+      console.log('Timer stopped');
     },
 
     /**
@@ -126,7 +121,7 @@ export const {
   start, 
   pause, 
   reset, 
-  tick, 
+  stop,
   toggleMode, 
   setStudyDuration, 
   setBreakDuration,
