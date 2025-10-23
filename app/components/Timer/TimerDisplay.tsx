@@ -5,6 +5,7 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks'
 import { tick } from '@/store/slices/timerSlice'
 import { useEffect } from 'react'
 import useSound from 'use-sound'
+import Image from 'next/image'
 
 export default function TimerDisplay() {
   const [playComplete, { stop }] = useSound('/sounds/timer-ring.mp3')
@@ -45,10 +46,22 @@ export default function TimerDisplay() {
     }
   }, [isRunning, timeRemaining, stop])
 
-  return (<>
-        <div className="relative inline-block">
-            <img src="/icons/tomato-timer.png" alt="Timer" className="max-w-[300px] h-auto object-contain" />
-            <p className="absolute top-[38%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl font-bold font-mono text-white drop-shadow-lg">{formattedTime}</p>
-        </div>
-    </>)
+  return (
+    <div className="text-center">
+      <div className="relative">
+        <Image 
+          src="/icons/tomato-timer.png" 
+          alt="Timer" 
+          width={300}
+          height={300}
+          className="max-w-[300px] h-auto object-contain mx-auto" 
+          priority
+        />
+        <hr className="w-full border-t-[15px]" />
+        <p className="absolute top-[38%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl font-bold font-mono text-white drop-shadow-lg">
+          {formattedTime}
+        </p>
+      </div>
+    </div>
+  )
 }
