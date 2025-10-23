@@ -4,8 +4,10 @@ import { formatTime, playSound } from '@/lib/utils'
 import { useAppSelector, useAppDispatch } from '@/store/hooks'
 import { tick } from '@/store/slices/timerSlice'
 import { useEffect } from 'react'
+import useSound from 'use-sound'
 
 export default function TimerDisplay() {
+  const [playComplete, { stop }] = useSound('/sounds/timer-ring.mp3')
   const { timeRemaining, isRunning } = useAppSelector(state => state.timer)
   const dispatch = useAppDispatch()
   const formattedTime = formatTime(timeRemaining)
@@ -28,12 +30,20 @@ export default function TimerDisplay() {
 
   }, [isRunning, dispatch])
 
-  // Play sound when timer reaches 0
+  // Play sound when timer reaches 15 seconds
+  // Specicifially for timer-ring.mp3
   useEffect(() => {
-    if(timeRemaining === 0) {
-      playSound('complete')
+    if(timeRemaining === 15) {
+      playComplete()
     }
-  }, [timeRemaining])
+  }, [timeRemaining, playComplete])
+
+  // Stop sound when timer is paused
+  useEffect(() => {
+    if (!isRunning && timeRemaining <= 10) {
+      stop()
+    }
+  }, [isRunning, timeRemaining, stop])
 
   return (<>
         <div className="relative inline-block">
