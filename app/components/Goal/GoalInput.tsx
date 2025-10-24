@@ -4,13 +4,13 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useState } from 'react';
 import { createGoal, clearCurrentGoal, completeSession } from '@/store/slices/goalSlice';
 import { start, pause, reset } from '@/store/slices/timerSlice';
-import { store } from '@/store/store';
 
 export default function GoalInput() {
   const dispatch = useAppDispatch();
   const [goalText, setGoalText] = useState('');
   const isRunning = useAppSelector(state => state.timer.isRunning);
   const timeRemaining = useAppSelector(state => state.timer.timeRemaining)
+  const studyDuration = useAppSelector(state => state.timer.studyDuration);
   
   // Get current goal using currentGoalId
   const currentGoalId = useAppSelector(state => state.goal.currentGoalId);
@@ -51,8 +51,8 @@ export default function GoalInput() {
   }
   // Save the current session and start a new one
   const handleSaveForLater = () => {
-    const state = store.getState();
-    const elapsedTime = state.timer.studyDuration - state.timer.timeRemaining;
+    //const state = store.getState();
+    const elapsedTime = studyDuration - timeRemaining;
     
     dispatch(completeSession({
       duration: elapsedTime,
