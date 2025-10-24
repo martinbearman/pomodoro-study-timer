@@ -17,13 +17,9 @@ import GoalHistory from './components/Goal/GoalHistory';
 export default function Home() {
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-8">
+    <div className="flex flex-col items-center justify-center p-8">
       <div className="w-full max-w-6xl">
         
-        <h1 className="text-4xl mb-8 text-red-600 text-left">
-          Temporizador Pomodoro
-        </h1>
-
         {/* Two-column layout: Timer on left, Goals on right */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
@@ -47,7 +43,7 @@ export default function Home() {
         </div>
 
       </div>
-    </main>
+    </div>
   )
 }
 

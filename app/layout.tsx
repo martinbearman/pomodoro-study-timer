@@ -3,6 +3,8 @@ import { Lexend } from 'next/font/google'
 
 import './globals.css'
 import { Providers } from './providers'
+import Header from './components/Header'
+import Footer from './components/Footer'
 
 /**
  * Font Configuration
@@ -38,7 +40,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={lexend.className}>
         <Providers>
-          {children}
+          <div className="min-h-screen flex flex-col">
+            <Header />
+            <main className="flex-1 overflow-auto">
+              {children}
+            </main>
+            <Footer />
+          </div>
         </Providers>
       </body>
     </html>

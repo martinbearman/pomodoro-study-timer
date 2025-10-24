@@ -36,41 +36,52 @@ export default function GoalHistory() {
     <div>
       <h2 className='text-2xl font-bold mb-4'>Goal History</h2>
       {sortedGoals.length === 0 ? (
-        <p>Set a goal!</p>
+        <div className="text-center py-8 text-gray-500">
+          <p className="text-lg">Set a goal to get started!</p>
+        </div>
       ) : (
-        <div className='overflow-x-auto'>
-          <table className='min-w-full border-collapse'>
-            <thead>
-              <tr className='bg-gray-100'>
-                <th className='px-4 py-2 text-left font-semibold border-b'>Goal</th>
-                <th className='px-4 py-2 text-left font-semibold border-b'>Created</th>
-                <th className='px-4 py-2 text-left font-semibold border-b'>Total Time</th>
-                <th className='px-4 py-2 text-left font-semibold border-b'>Sessions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedGoals.map((goal, index) => (
-                <tr 
-                  key={goal.id}
-                  onClick={() => handleGoalClick(goal.id)}
-                  className={`cursor-pointer hover:opacity-80 ${
-                    goal.id === currentGoalId
-                      ? 'bg-blue-200 font-semibold'  // Highlight current goal
-                      : index % 2 === 0 
-                        ? 'bg-blue-50' 
-                        : 'bg-white'
-                  }`}
-                >
-                  <td className='px-3 py-2 border-b'>{goal.goalDescription}</td>
-                  <td className='px-3 py-2 border-b text-gray-600 text-sm' suppressHydrationWarning>
+        <div className="space-y-3">
+          {sortedGoals.map((goal, index) => (
+            <div
+              key={goal.id}
+              onClick={() => handleGoalClick(goal.id)}
+              className={`
+                p-4 rounded-lg border cursor-pointer transition-all duration-200 hover:shadow-md
+                ${goal.id === currentGoalId
+                  ? 'bg-red-100 border-red-300 shadow-md'  // Highlight current goal
+                  : 'bg-white border-gray-200 hover:border-gray-300'
+                }
+              `}
+            >
+              <div className="flex justify-between items-start mb-2">
+                <h3 className={`font-semibold text-lg ${goal.id === currentGoalId ? 'text-red-800' : 'text-gray-800'}`}>
+                  {goal.goalDescription}
+                </h3>
+                {goal.id === currentGoalId && (
+                  <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                    Current
+                  </span>
+                )}
+              </div>
+              
+              <div className="grid grid-cols-3 gap-4 text-sm">
+                <div>
+                  <span className="text-gray-500 block">Created</span>
+                  <span className="text-gray-700" suppressHydrationWarning>
                     {formatTimeStamp(goal.goalTimeStamp)} {isToday(goal.goalTimeStamp) ? '(today)' : ''}
-                  </td>
-                  <td className='px-3 py-2 border-b text-gray-600'>{formatTime(goal.totalTimeStudied)}</td>
-                  <td className='px-3 py-2 border-b text-gray-600'>{getSessionCount(goal.id)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-500 block">Total Time</span>
+                  <span className="text-gray-700 font-medium">{formatTime(goal.totalTimeStudied)}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500 block">Sessions</span>
+                  <span className="text-gray-700 font-medium">{getSessionCount(goal.id)}</span>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
