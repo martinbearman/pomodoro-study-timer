@@ -3,7 +3,7 @@
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useState } from 'react';
 import { createGoal, clearCurrentGoal, completeSession } from '@/store/slices/goalSlice';
-import { start, pause, reset } from '@/store/slices/timerSlice';
+import { start, pause, reset, skipBreak } from '@/store/slices/timerSlice';
 
 export default function GoalInput() {
   const dispatch = useAppDispatch();
@@ -11,6 +11,7 @@ export default function GoalInput() {
   const isRunning = useAppSelector(state => state.timer.isRunning);
   const timeRemaining = useAppSelector(state => state.timer.timeRemaining)
   const studyDuration = useAppSelector(state => state.timer.studyDuration);
+  const isBreak = useAppSelector(state => state.timer.isBreak);
   
   // Get current goal using currentGoalId
   const currentGoalId = useAppSelector(state => state.goal.currentGoalId);
@@ -19,6 +20,11 @@ export default function GoalInput() {
   );
   // Check if the button is disabled based on the current state
   const isButtonDisabled = !currentGoal && goalText.trim() === '';
+
+  // Handle skip break
+  const handleSkipBreak = () => {
+    dispatch(skipBreak());
+  };
   // Start a new session
   const handleStartSession = () => {
     dispatch(createGoal(goalText));  // Just pass the description
@@ -41,6 +47,9 @@ export default function GoalInput() {
   }
   // Get the button text based on the current state
   const handleGetButtonText = () => {
+    if (isBreak) {
+      return 'Skip Break';
+    }
     if (isRunning) {
       return 'Pause';
     }
@@ -66,6 +75,9 @@ export default function GoalInput() {
 
   // Get the button click handler based on the current state
   const getButtonClickHandler = () => {
+    if (isBreak) {
+      return handleSkipBreak;
+    }
     if (isRunning) {
       return handlePauseSession;
     }
@@ -107,7 +119,11 @@ export default function GoalInput() {
         <button 
           onClick={getButtonClickHandler()}
           disabled={isButtonDisabled}
-          className="disabled:text-gray-500 disabled:bg-red-100 w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-800 transition-colors"
+          className={`disabled:text-gray-500 disabled:bg-red-100 w-full px-6 py-3 font-semibold rounded-lg transition-colors ${
+            isBreak 
+              ? 'bg-orange-500 text-white hover:bg-orange-600' 
+              : 'bg-red-500 text-white hover:bg-red-800'
+          }`}
         >
           {handleGetButtonText()}
         </button>

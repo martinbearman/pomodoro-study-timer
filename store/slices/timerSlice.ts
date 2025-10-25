@@ -12,6 +12,10 @@ interface TimerState {
   isBreak: boolean          // Are we in break mode or study mode?
   studyDuration: number     // Study session length in seconds (default: 25 min)
   breakDuration: number     // Break length in seconds (default: 7 min)
+  studyElapsedTime: number  // Time spent in study sessions (in seconds)
+  breakElapsedTime: number  // Time spent in breaks (in seconds)
+  showBreakPrompt: boolean  // Show break options when study session ends
+  breakMode: 'automatic' | 'manual' | 'none'  // How breaks are handled
 }
 
 /**
@@ -27,6 +31,10 @@ const initialState: TimerState = {
   isBreak: false,
   studyDuration: 1500,  // 25 minutes
   breakDuration: 420,   // 7 minutes
+  studyElapsedTime: 0,  // No time elapsed initially
+  breakElapsedTime: 0,  // No time elapsed initially
+  showBreakPrompt: false,
+  breakMode: 'manual'   // Default to manual break control
 }
 
 /**
@@ -113,6 +121,67 @@ const timerSlice = createSlice({
     setTimeRemaining: (state, action: PayloadAction<number>) => {
       state.timeRemaining = action.payload
     },
+
+    /**
+     * Update elapsed time for the current session type
+     */
+    updateElapsedTime: (state, action: PayloadAction<number>) => {
+      if (state.isBreak) {
+        state.breakElapsedTime = action.payload
+      } else {
+        state.studyElapsedTime = action.payload
+      }
+    },
+
+    /**
+     * Reset elapsed times (useful when starting a new day/session)
+     */
+    resetElapsedTimes: (state) => {
+      state.studyElapsedTime = 0
+      state.breakElapsedTime = 0
+    },
+
+    /**
+     * Show break prompt when study session ends
+     */
+    showBreakPrompt: (state) => {
+      state.showBreakPrompt = true
+      state.isRunning = false
+    },
+
+    /**
+     * Hide break prompt
+     */
+    hideBreakPrompt: (state) => {
+      state.showBreakPrompt = false
+    },
+
+    /**
+     * Start break timer
+     */
+    startBreak: (state) => {
+      state.isBreak = true
+      state.timeRemaining = state.breakDuration
+      state.showBreakPrompt = false
+      state.isRunning = true
+    },
+
+    /**
+     * Skip break and return to study mode
+     */
+    skipBreak: (state) => {
+      state.isBreak = false
+      state.timeRemaining = state.studyDuration
+      state.showBreakPrompt = false
+      state.isRunning = false
+    },
+
+    /**
+     * Set break mode preference
+     */
+    setBreakMode: (state, action: PayloadAction<'automatic' | 'manual' | 'none'>) => {
+      state.breakMode = action.payload
+    },
   },
 })
 
@@ -125,7 +194,14 @@ export const {
   toggleMode, 
   setStudyDuration, 
   setBreakDuration,
-  setTimeRemaining
+  setTimeRemaining,
+  updateElapsedTime,
+  resetElapsedTimes,
+  showBreakPrompt,
+  hideBreakPrompt,
+  startBreak,
+  skipBreak,
+  setBreakMode
 } = timerSlice.actions
 
 // Export reducer to include in the store
