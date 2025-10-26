@@ -1,11 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
 export async function POST(request: NextRequest) {
   try {
     const { name, email, password } = await request.json()
+
+    // Validate password strength
+    if (!password || password.length < 6) {
+      return NextResponse.json(
+        { error: 'Password must be at least 6 characters long' },
+        { status: 400 }
+      )
+    }
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
@@ -19,13 +28,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Hash the password before storing
+    const hashedPassword = await bcrypt.hash(password, 12)
+
     // Create new user
     const user = await prisma.user.create({
       data: {
         name,
         email,
-        // In production, you'd hash the password here
-        // For now, we'll skip password storage for simplicity
+        password: hashedPassword, // Store hashed password
       }
     })
 
