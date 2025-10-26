@@ -9,7 +9,7 @@ import Image from 'next/image'
 
 export default function TimerDisplay() {
   const [playComplete, { stop }] = useSound('/sounds/timer-ring.mp3')
-  const { timeRemaining, isRunning, studyDuration, breakDuration, isBreak, showBreakPrompt } = useAppSelector(state => state.timer)
+  const { timeRemaining, isRunning, studyDuration, breakDuration, isBreak, showBreakPrompt, breakMode } = useAppSelector(state => state.timer)
   const dispatch = useAppDispatch()
   const formattedTime = formatTime(timeRemaining)
   const startTimeRef = useRef<number | null>(null)
@@ -146,6 +146,11 @@ export default function TimerDisplay() {
             Break Time
           </div>
         )}
+        
+      </div>
+      {/* Break Setting Display */}
+      <div className="mt-4 text-sm text-gray-600 flex flex-col items-center gap-1">
+        <p className="font-medium">Break: {Math.floor(breakDuration / 60)} min ({breakMode})</p>
       </div>
     </div>
   )
