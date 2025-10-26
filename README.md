@@ -7,6 +7,8 @@ A Pomodoro-style study timer built with modern web technologies to help you focu
 - **Next.js 14** - React framework with App Router
 - **TypeScript** - Type safety and better developer experience
 - **Redux Toolkit** - Predictable state management
+- **Prisma + PostgreSQL** - Database ORM with PostgreSQL
+- **NextAuth** - Authentication
 - **Vitest** - Fast, modern testing framework
 - **React Testing Library** - Component testing utilities
 
@@ -14,31 +16,78 @@ A Pomodoro-style study timer built with modern web technologies to help you focu
 
 ### Prerequisites
 - Node.js 18+ installed
-- npm or yarn package manager
+- pnpm (or npm/yarn)
+- PostgreSQL database (local or remote)
+
+### Database Setup
+
+#### Option 1: Local PostgreSQL
+Install PostgreSQL locally and create a database:
+
+```bash
+createdb study_timer
+```
+
+#### Option 2: Docker (Recommended)
+Run PostgreSQL in Docker:
+
+```bash
+docker run --name study-timer-db \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=study_timer \
+  -p 5432:5432 \
+  -d postgres
+```
+
+#### Option 3: Vercel Postgres (Production)
+Use Vercel Postgres for production deployments.
 
 ### Installation
 
 1. Install dependencies:
 ```bash
-npm install
+pnpm install
 ```
 
-2. Run the development server:
+2. Set up environment variables:
 ```bash
-npm run dev
+cp .env.example .env
 ```
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser
+Then update `.env` with your database URL:
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/study_timer?schema=public"
+NEXTAUTH_SECRET="your-secret-key-here"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+3. Run database migrations:
+```bash
+pnpm prisma migrate dev --name init
+```
+
+4. Generate Prisma Client:
+```bash
+pnpm prisma generate
+```
+
+5. Run the development server:
+```bash
+pnpm dev
+```
+
+6. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ### Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm test` - Run tests with Vitest
-- `npm run test:ui` - Run tests with UI
-- `npm run test:coverage` - Run tests with coverage report
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm start` - Start production server
+- `pnpm lint` - Run ESLint
+- `pnpm test` - Run tests with Vitest
+- `pnpm test:ui` - Run tests with UI
+- `pnpm test:coverage` - Run tests with coverage report
+- `pnpm db:studio` - Open Prisma Studio
 
 ## 🎯 Features
 
@@ -46,10 +95,10 @@ npm run dev
 - ✅ Break timer (default: 7 minutes)
 - ✅ Study goal tracking
 - ✅ Session management
-- ✅ Visual progress indicator
+- ✅ User authentication
+- ✅ User preferences
 - 🚧 Session history (coming soon)
 - 🚧 Statistics dashboard (coming soon)
-- 🚧 User authentication (coming soon)
 
 ## 📁 Project Structure
 
@@ -59,42 +108,44 @@ study-timer/
 │   ├── layout.tsx         # Root layout
 │   ├── page.tsx           # Home page
 │   ├── components/        # React components
-│   └── globals.css        # Global styles
+│   ├── api/              # API routes
+│   └── auth/             # Auth pages
 ├── store/                 # Redux store
 │   ├── store.ts          # Store configuration
 │   ├── slices/           # Redux slices
 │   └── hooks.ts          # Typed Redux hooks
 ├── lib/                   # Utility functions
+├── prisma/               # Database schema and migrations
 ├── __tests__/            # Test files
 └── public/               # Static assets
 ```
 
 ## 🧪 Testing
 
-This project uses Vitest and React Testing Library for testing.
-
-Run tests:
 ```bash
-npm test
+pnpm test              # Run tests
+pnpm test:ui          # Run tests with UI
+pnpm test:coverage    # Generate coverage report
 ```
 
-Run tests with UI:
-```bash
-npm run test:ui
-```
+## 🚀 Deployment
 
-## 📖 Learning Resources
+### Vercel
+
+1. Push your code to GitHub
+2. Import your repository on Vercel
+3. Add a Vercel Postgres database
+4. Set environment variables:
+   - `DATABASE_URL` - Automatically provided by Vercel Postgres
+   - `NEXTAUTH_SECRET` - Generate a random secret
+   - `NEXTAUTH_URL` - Your deployment URL
+5. Deploy!
+
+The `DATABASE_URL` provided by Vercel Postgres will automatically use PostgreSQL.
+
+## 📚 Learn More
 
 - [Next.js Documentation](https://nextjs.org/docs)
+- [Prisma Documentation](https://www.prisma.io/docs)
 - [Redux Toolkit Documentation](https://redux-toolkit.js.org/)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [Vitest Documentation](https://vitest.dev/)
-
-## 🤝 Contributing
-
-This is a learning project! Feel free to experiment, break things, and learn.
-
-## 📝 License
-
-MIT
-
+- [NextAuth Documentation](https://next-auth.js.org/)
