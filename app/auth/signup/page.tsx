@@ -51,12 +51,12 @@ export default function SignUp() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-center text-3xl text-red-700">
             Create your account
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{' '}
-            <a href="/auth/signin" className="font-medium text-indigo-600 hover:text-indigo-500">
+            <a href="/auth/signin" className="font-medium text-grey-600 hover:text-grey-500">
               sign in to your existing account
             </a>
           </p>
@@ -103,8 +103,9 @@ export default function SignUp() {
                 name="password"
                 type="password"
                 required
+                minLength={6}
                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Password"
+                placeholder="Password (min 6 characters)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
