@@ -22,6 +22,10 @@ describe('timerSlice', () => {
     isBreak: false,
     studyDuration: 1500,
     breakDuration: 420,
+    studyElapsedTime: 0,
+    breakElapsedTime: 0,
+    showBreakPrompt: false,
+    breakMode: 'manual' as const,
   }
 
   it('should return initial state', () => {
