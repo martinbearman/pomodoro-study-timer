@@ -2,9 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
 
 export default function SignUp() {
   const [name, setName] = useState('')
