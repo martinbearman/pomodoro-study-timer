@@ -1,11 +1,18 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { 
   formatTime, 
   minutesToSeconds, 
   secondsToMinutes,
   getMotivationalMessage,
-  formatStudyTime
+  formatStudyTime,
+  formatTimeStamp,
+  isToday
 } from '@/lib/utils'
+
+// Mock window for server-side checks
+beforeEach(() => {
+  vi.resetAllMocks()
+})
 
 /**
  * Unit Tests for Utility Functions
@@ -101,6 +108,50 @@ describe('formatStudyTime', () => {
 
   it('should handle zero seconds', () => {
     expect(formatStudyTime(0)).toBe('0m')
+  })
+})
+
+describe('formatTimeStamp', () => {
+  it('should format timestamp with date and time', () => {
+    const timestamp = new Date('2024-10-15T14:30:00').getTime()
+    const result = formatTimeStamp(timestamp)
+    
+    expect(result).toContain('Oct') // Month
+    expect(result).toContain('15') // Day
+    expect(result).toContain('2024') // Year
+    expect(result).toContain('at') // Time separator
+    expect(result).toMatch(/\d{1,2}:\d{2}/) // Time format
+  })
+
+  it('should format timestamp in 12-hour format', () => {
+    const timestamp = new Date('2024-10-15T14:30:00').getTime()
+    const result = formatTimeStamp(timestamp)
+    
+    // The function uses en-GB locale which returns lowercase am/pm
+    expect(result).toMatch(/am|pm/i)
+  })
+})
+
+describe('isToday', () => {
+  it('should return true for current timestamp', () => {
+    expect(isToday(Date.now())).toBe(true)
+  })
+
+  it('should return false for yesterday', () => {
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
+    expect(isToday(yesterday.getTime())).toBe(false)
+  })
+
+  it('should return false for tomorrow', () => {
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    expect(isToday(tomorrow.getTime())).toBe(false)
+  })
+
+  it('should return false for distant past', () => {
+    const pastDate = new Date('2020-01-01').getTime()
+    expect(isToday(pastDate)).toBe(false)
   })
 })
 
