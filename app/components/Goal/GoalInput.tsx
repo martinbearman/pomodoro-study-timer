@@ -26,11 +26,22 @@ export default function GoalInput() {
     dispatch(skipBreak());
   };
   // Start a new session
-  const handleStartSession = () => {
+  const handleStartSession = async () => {
     dispatch(createGoal(goalText));  // Just pass the description
     dispatch(reset());
     dispatch(start());
     setGoalText('');
+    
+    // Persist goal to database
+    try {
+      await fetch('/api/goals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ goalDescription: goalText })
+      })
+    } catch (error) {
+      console.error('Error saving goal to database:', error)
+    }
   }
   // Pause the current session
   const handlePauseSession = () => {

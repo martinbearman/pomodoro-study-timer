@@ -24,7 +24,7 @@ export interface Session {
 /**
  * Goal State Interface
  */
-interface GoalState {
+export interface GoalState {
   goals: Goal[]
   sessions: Session[]
   currentGoalId: string | null   // Which goal is active right now
@@ -92,10 +92,24 @@ const goalSlice = createSlice({
 
       console.trace("completeSession called", action.payload);
 
+    },
+    
+    // Load goals from database
+    loadGoals: (state, action: PayloadAction<Goal[]>) => {
+      state.goals = action.payload
+    },
+    
+    // Load sessions from database
+    loadSessions: (state, action: PayloadAction<Session[]>) => {
+      state.sessions = action.payload
+      
+      // Calculate total time from all sessions
+      state.totalStudyTime = action.payload.reduce((total, session) => total + session.duration, 0)
+      state.totalSessions = action.payload.length
     }
   }
 })
 
-export const { createGoal, setCurrentGoal, clearCurrentGoal, completeSession } = goalSlice.actions
+export const { createGoal, setCurrentGoal, clearCurrentGoal, completeSession, loadGoals, loadSessions } = goalSlice.actions
 export default goalSlice.reducer
 
