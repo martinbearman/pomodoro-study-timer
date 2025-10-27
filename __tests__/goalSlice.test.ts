@@ -5,7 +5,7 @@ import goalReducer, {
   clearCurrentGoal, 
   completeSession 
 } from '@/store/slices/goalSlice'
-import type { Goal, Session } from '@/store/slices/goalSlice'
+import type { Goal, Session, GoalState } from '@/store/slices/goalSlice'
 
 /**
  * Goal Slice Tests
@@ -14,7 +14,7 @@ import type { Goal, Session } from '@/store/slices/goalSlice'
  */
 
 describe('goalSlice', () => {
-  const initialState = {
+  const initialState: GoalState = {
     goals: [],
     sessions: [],
     currentGoalId: null,
@@ -38,7 +38,7 @@ describe('goalSlice', () => {
   })
 
   it('should handle setCurrentGoal action', () => {
-    const stateWithGoal = {
+    const stateWithGoal: GoalState = {
       ...initialState,
       goals: [
         { id: 'goal-1', goalDescription: 'Goal 1', goalTimeStamp: Date.now(), totalTimeStudied: 0 }
@@ -50,7 +50,7 @@ describe('goalSlice', () => {
   })
 
   it('should handle clearCurrentGoal action', () => {
-    const stateWithCurrentGoal = {
+    const stateWithCurrentGoal: GoalState = {
       ...initialState,
       currentGoalId: 'goal-1'
     }
@@ -60,7 +60,7 @@ describe('goalSlice', () => {
   })
 
   it('should handle completeSession action', () => {
-    const stateWithCurrentGoal = {
+    const stateWithCurrentGoal: GoalState = {
       ...initialState,
       goals: [
         { id: 'goal-1', goalDescription: 'Goal 1', goalTimeStamp: Date.now(), totalTimeStudied: 0 }
@@ -87,7 +87,7 @@ describe('goalSlice', () => {
   })
 
   it('should accumulate multiple completed sessions', () => {
-    const stateWithGoal = {
+    const stateWithGoal: GoalState = {
       ...initialState,
       goals: [
         { id: 'goal-1', goalDescription: 'Goal 1', goalTimeStamp: Date.now(), totalTimeStudied: 0 }
@@ -105,7 +105,7 @@ describe('goalSlice', () => {
   })
 
   it('should handle incomplete sessions', () => {
-    const stateWithGoal = {
+    const stateWithGoal: GoalState = {
       ...initialState,
       goals: [
         { id: 'goal-1', goalDescription: 'Goal 1', goalTimeStamp: Date.now(), totalTimeStudied: 0 }
@@ -122,7 +122,7 @@ describe('goalSlice', () => {
   })
 
   it('should generate unique session IDs', () => {
-    const stateWithGoal = {
+    const stateWithGoal: GoalState = {
       ...initialState,
       goals: [
         { id: 'goal-1', goalDescription: 'Goal 1', goalTimeStamp: Date.now(), totalTimeStudied: 0 }
@@ -137,7 +137,7 @@ describe('goalSlice', () => {
   })
 
   it('should create multiple goals independently', () => {
-    let state = initialState
+    let state: GoalState = initialState
     
     state = goalReducer(state, createGoal('Goal 1'))
     const goal1Id = state.currentGoalId
@@ -153,7 +153,7 @@ describe('goalSlice', () => {
   })
 
   it('should handle switch between goals and maintain separate time tracking', () => {
-    let state = initialState
+    let state: GoalState = initialState
     
     // Create goal 1
     state = goalReducer(state, createGoal('Goal 1'))

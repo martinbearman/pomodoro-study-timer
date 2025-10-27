@@ -28,6 +28,21 @@ listenerMiddleware.startListening({
           duration: elapsedTime,
           completed: true
         }))
+        
+        // Persist session to database
+        try {
+          await fetch('/api/sessions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              goalId: state.goal.currentGoalId,
+              duration: elapsedTime,
+              completed: true
+            })
+          })
+        } catch (error) {
+          console.error('Error saving session to database:', error)
+        }
       }
 
       // Handle break flow based on break mode
