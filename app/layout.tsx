@@ -18,6 +18,14 @@ import Footer from './components/Footer'
 export const metadata: Metadata = {
   title: 'Study Timer - Focus & Learn',
   description: 'A Pomodoro-style study timer to help you stay focused and productive',
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+    },
+  },
 }
 
 /**
