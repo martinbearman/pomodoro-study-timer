@@ -1,9 +1,9 @@
 'use client'
 
-import { formatTime, playSound } from '@/lib/utils'
+import { formatTime } from '@/lib/utils'
 import { useAppSelector, useAppDispatch } from '@/store/hooks'
 import { setTimeRemaining, pause, startBreak, skipBreak, hideBreakPrompt, updateElapsedTime } from '@/store/slices/timerSlice'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import useSound from 'use-sound'
 import Image from 'next/image'
 
@@ -15,8 +15,15 @@ export default function TimerDisplay() {
   const startTimeRef = useRef<number | null>(null)
   const lastUpdateTimeRef = useRef<number>(Date.now())
 
+  const initializeStartTime = useCallback(() => {
+    if (!startTimeRef.current) {
+      const totalDuration = isBreak ? breakDuration : studyDuration
+      startTimeRef.current = Date.now() - (totalDuration - timeRemaining) * 1000
+    }
+  }, [isBreak, breakDuration, studyDuration, timeRemaining])
+
   // Calculate elapsed time and update timer
-  const updateTimer = () => {
+  const updateTimer = useCallback(() => {
     if (!isRunning || !startTimeRef.current) return
 
     const now = Date.now()
@@ -34,7 +41,7 @@ export default function TimerDisplay() {
     if (newTimeRemaining === 0 && isRunning) {
       dispatch(pause()) // Stop the timer
     }
-  }
+  }, [isRunning, isBreak, breakDuration, studyDuration, timeRemaining, dispatch])
 
   // Update timer every second
   useEffect(() => {
@@ -42,11 +49,8 @@ export default function TimerDisplay() {
 
     if (isRunning) {
       // Set start time when timer starts
-      if (!startTimeRef.current) {
-        const totalDuration = isBreak ? breakDuration : studyDuration
-        startTimeRef.current = Date.now() - (totalDuration - timeRemaining) * 1000
-      }
-      
+      initializeStartTime()
+
       intervalId = setInterval(updateTimer, 1000)
     } else {
       // Reset start time when timer stops
@@ -58,7 +62,7 @@ export default function TimerDisplay() {
         clearInterval(intervalId)
       }
     }
-  }, [isRunning, dispatch, timeRemaining, studyDuration, breakDuration, isBreak])
+  }, [isRunning, initializeStartTime, updateTimer])
 
   // Handle visibility change to update timer when tab becomes active
   useEffect(() => {
@@ -74,19 +78,20 @@ export default function TimerDisplay() {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
-  }, [isRunning, timeRemaining, studyDuration, breakDuration, isBreak])
+  }, [isRunning, updateTimer])
 
   // Play sound when timer reaches 15 seconds
-  // Specicifially for timer-ring.mp3
+  // Specifically for timer-ring.mp3
   useEffect(() => {
-    if(timeRemaining === 15) {
+    console.log('isRunning', isRunning);
+    if(timeRemaining === 15 && isRunning) {
       playComplete()
     }
-  }, [timeRemaining, playComplete])
+  }, [timeRemaining, playComplete, isRunning])
 
   // Stop sound when timer is paused
   useEffect(() => {
-    if (!isRunning && timeRemaining <= 10) {
+    if (!isRunning) {
       stop()
     }
   }, [isRunning, timeRemaining, stop])
