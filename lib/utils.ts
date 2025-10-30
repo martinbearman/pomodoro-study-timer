@@ -46,36 +46,7 @@ export function secondsToMinutes(seconds: number): number {
   return Math.round(seconds / 60)
 }
 
-/**
- * Play a notification sound
- * Uses the browser's Audio API
- * 
- * @param soundType - Type of sound to play ('complete' or 'tick')
- */
-export function playSound(soundType: 'complete' | 'tick' = 'complete'): void {
-  if (typeof window === 'undefined') return // Server-side check
-  
-  // For now, we'll use the browser's beep
-  // In production, you'd load an actual sound file
-  const context = new AudioContext()
-  const oscillator = context.createOscillator()
-  const gainNode = context.createGain()
-  
-  oscillator.connect(gainNode)
-  gainNode.connect(context.destination)
-  
-  if (soundType === 'complete') {
-    oscillator.frequency.value = 800 // Higher pitch for completion
-    gainNode.gain.value = 0.3
-    oscillator.start()
-    oscillator.stop(context.currentTime + 0.3)
-  } else {
-    oscillator.frequency.value = 400 // Lower pitch for tick
-    gainNode.gain.value = 0.1
-    oscillator.start()
-    oscillator.stop(context.currentTime + 0.05)
-  }
-}
+// Removed obsolete playSound helper; sounds are handled via use-sound in UI
 
 /**
  * Get a motivational message based on completed sessions
